@@ -13,7 +13,9 @@
     </form>
 
     {% for record in kakeibo %}
-    <p>{{record["item"]}}  {{record["money"]}}円</p>
+    <p>{{record["id"]}}  {{record["item"]}}  {{record["money"]}}円
+         <a href="/delete/{{ record['id'] }}">削除</a>
+    </p>
     {% endfor %}
 </body>
 </html>
