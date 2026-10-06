@@ -26,5 +26,17 @@ def delete(id):
    for i,record in enumerate(kakeibo):
        if record["id"]==id:
            del kakeibo[i]
-   return redirect("/")        
+   return redirect("/")      
+@app.route("/edit/<int:id>",methods=["GET","POST"])
+def edit(id):
+    for i,record in enumerate(kakeibo):
+        if record["id"]==id:
+            if request.method=="POST":
+                item=request.form["item"]
+                money=request.form["money"]
+                money=int(money)
+                record["item"]=item
+                record["money"]=money
+                return redirect("/")
+            return render_template("edit.html", record=record)
 app.run()
