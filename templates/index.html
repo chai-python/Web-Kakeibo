@@ -12,6 +12,11 @@
         <button>追加</button>
     </form>
 
+    <form action="/search" method="post">
+        <input name="item" placeholder="商品名">
+        <button>検索</button>
+    </form>
+
     {% for record in kakeibo %}
     <p>{{record["id"]}}  {{record["item"]}}  {{record["money"]}}円
         <a href="/edit/{{record['id']}}">編集</a>

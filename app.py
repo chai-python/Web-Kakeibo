@@ -21,6 +21,16 @@ def add():
     })
     next_id = next_id + 1
     return redirect("/")
+
+@app.route("/search", methods=["POST"])
+def search():
+    item=request.form["item"]
+    results = []
+    for record in kakeibo:
+        if item in record["item"]:
+            results.append(record)
+    return render_template("index.html",kakeibo=results)
+        
 @app.route("/delete/<int:id>")
 def delete(id):
    for i,record in enumerate(kakeibo):
