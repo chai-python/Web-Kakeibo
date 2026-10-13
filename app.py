@@ -1,8 +1,20 @@
 from flask import Flask, render_template, request, redirect
+import json
 
 app = Flask(__name__)
-kakeibo=[]
-next_id=1
+try:
+    with open("kakeibo.json","r",encoding="utf-8")as f:
+        kakeibo=json.load(f)
+except FileNotFoundError:
+    kakeibo=[]
+
+if kakeibo:
+    ids=[]
+    for record in kakeibo:
+        ids.append(record["id"])
+    next_id=max(ids)+1
+else:
+    next_id=1
 
 @app.route("/")
 def home():
@@ -19,6 +31,7 @@ def add():
         "item":item,
         "money":money
     })
+    save_data()
     next_id = next_id + 1
     return redirect("/")
 
@@ -36,7 +49,9 @@ def delete(id):
    for i,record in enumerate(kakeibo):
        if record["id"]==id:
            del kakeibo[i]
-   return redirect("/")      
+   save_data()
+   return redirect("/")
+
 @app.route("/edit/<int:id>",methods=["GET","POST"])
 def edit(id):
     for i,record in enumerate(kakeibo):
@@ -47,6 +62,10 @@ def edit(id):
                 money=int(money)
                 record["item"]=item
                 record["money"]=money
+                save_data()
                 return redirect("/")
             return render_template("edit.html", record=record)
+def save_data():
+    with open("kakeibo.json", "w", encoding="utf-8") as f:
+        json.dump(kakeibo, f, ensure_ascii=False, indent=4)   
 app.run()
