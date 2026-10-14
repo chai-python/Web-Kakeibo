@@ -18,7 +18,10 @@ else:
 
 @app.route("/")
 def home():
-    return render_template("index.html", kakeibo=kakeibo)
+    total=0
+    for record in kakeibo:
+        total=total+record["money"]
+    return render_template("index.html", kakeibo=kakeibo,total=total)
 
 @app.route("/add", methods=["POST"])
 def add():
