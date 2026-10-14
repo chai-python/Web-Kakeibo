@@ -7,9 +7,15 @@
     <h1>Web Kakeibo</h1>
     <p>ここから家計簿を作っていきます。</p>
     <p>支出総額：{{ total }} 円</p>
+    <form action="/month" method="post">
+        <input type="month" name="month">
+        <button>月別表示</button>
+    </form>
+
     <form action="/add" method="post">
         <input name="item" placeholder="商品名">
         <input name="money" placeholder="金額">
+        <input type="date" name="date">
         <button>追加</button>
     </form>
 

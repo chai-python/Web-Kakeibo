@@ -2,6 +2,7 @@
 
     <input name="item" value="{{ record['item'] }}">
     <input name="money" value="{{ record['money'] }}">
-
+    <input type="date" name="date" value="{{record.get('date','')}}">
     <button>保存</button>
+
 </form>

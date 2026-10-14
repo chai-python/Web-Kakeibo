@@ -28,11 +28,13 @@ def add():
     global next_id
     item=request.form["item"]
     money=request.form["money"]
+    date=request.form["date"]
     money = int(money)
     kakeibo.append({
         "id":next_id,
         "item":item,
-        "money":money
+        "money":money,
+        "date":date
     })
     save_data()
     next_id = next_id + 1
@@ -46,7 +48,19 @@ def search():
         if item in record["item"]:
             results.append(record)
     return render_template("index.html",kakeibo=results)
-        
+
+@app.route("/month",methods=["POST"])
+def month():
+    month=request.form["month"]
+    results=[]
+    for record in kakeibo:
+        if record.get("date","")[:7]==month:
+            results.append(record)
+    total=0
+    for record in results:
+        total=total+record["money"]
+    return render_template("index.html", kakeibo=results,total=total)
+
 @app.route("/delete/<int:id>")
 def delete(id):
    for i,record in enumerate(kakeibo):
@@ -62,9 +76,11 @@ def edit(id):
             if request.method=="POST":
                 item=request.form["item"]
                 money=request.form["money"]
+                date=request.form["date"]
                 money=int(money)
                 record["item"]=item
                 record["money"]=money
+                record["date"]=date
                 save_data()
                 return redirect("/")
             return render_template("edit.html", record=record)
