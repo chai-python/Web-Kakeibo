@@ -7,9 +7,19 @@
     <h1>Web Kakeibo</h1>
     <p>ここから家計簿を作っていきます。</p>
     <p>支出総額：{{ total }} 円</p>
+    {% if monthly_budget is defined %}
+    <p>月間予算：{{ monthly_budget }} 円</p>
+    <p>予算残額：{{ remaining }} 円</p>
+    {% endif %}
     <form action="/month" method="post">
         <input type="month" name="month">
         <button>月別表示</button>
+    </form>
+
+    <form action="/budget" method="post">
+        <input type="month" name="month">
+        <input type="number" name="money">
+        <button>予算を保存</button>
     </form>
 
     <form action="/add" method="post">

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect
+from datetime import date
 import json
 
 app = Flask(__name__)
@@ -7,6 +8,12 @@ try:
         kakeibo=json.load(f)
 except FileNotFoundError:
     kakeibo=[]
+
+try:
+    with open("budget.json","r",encoding="utf-8")as f:
+        budgets=json.load(f)
+except FileNotFoundError:
+    budgets={}
 
 if kakeibo:
     ids=[]
@@ -18,10 +25,17 @@ else:
 
 @app.route("/")
 def home():
-    total=0
+    current_month=date.today().strftime("%Y-%m")
+    results=[]
     for record in kakeibo:
+        if record.get("date","")[:7]==current_month:
+            results.append(record)
+    total=0
+    for record in results:
         total=total+record["money"]
-    return render_template("index.html", kakeibo=kakeibo,total=total)
+    monthly_budget=budgets.get(current_month, 0)
+    remaining = monthly_budget - total
+    return render_template("index.html", kakeibo=results,total=total,monthly_budget=monthly_budget,remaining=remaining)
 
 @app.route("/add", methods=["POST"])
 def add():
@@ -59,7 +73,20 @@ def month():
     total=0
     for record in results:
         total=total+record["money"]
-    return render_template("index.html", kakeibo=results,total=total)
+
+    monthly_budget=budgets.get(month, 0)
+    remaining = monthly_budget - total
+    return render_template("index.html", kakeibo=results,total=total,monthly_budget=monthly_budget,remaining=remaining)
+
+@app.route("/budget",methods=["POST"])
+def budget():
+    month=request.form["month"]
+    money=request.form["money"]
+    money=int(money)
+    budgets[month]=money
+    save_budgets()
+    return redirect("/")
+    
 
 @app.route("/delete/<int:id>")
 def delete(id):
@@ -87,4 +114,8 @@ def edit(id):
 def save_data():
     with open("kakeibo.json", "w", encoding="utf-8") as f:
         json.dump(kakeibo, f, ensure_ascii=False, indent=4)   
+def save_budgets():
+   with open("budget.json", "w", encoding="utf-8") as f:
+        json.dump(budgets, f, ensure_ascii=False, indent=4)   
+    
 app.run()
