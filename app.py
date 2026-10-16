@@ -57,11 +57,18 @@ def add():
 @app.route("/search", methods=["POST"])
 def search():
     item=request.form["item"]
+    current_month = date.today().strftime("%Y-%m")
     results = []
     for record in kakeibo:
         if item in record["item"]:
             results.append(record)
-    return render_template("index.html",kakeibo=results)
+    total = 0
+    for record in kakeibo:
+        if record.get("date", "")[:7] == current_month:
+            total = total + record["money"]
+    monthly_budget = budgets.get(current_month, 0)
+    remaining = monthly_budget - total
+    return render_template("index.html",kakeibo=results,total=total,monthly_budget=monthly_budget,remaining=remaining)
 
 @app.route("/month",methods=["POST"])
 def month():
