@@ -1,16 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Kakeibo</title>
+<style>
+    body {
+        margin: 0;
+        padding: 32px 20px;
+        background-color: #F7F6F0;
+        color: #333A33;
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+                     "Hiragino Kaku Gothic ProN", sans-serif;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        margin-bottom: 8px;
+        font-size: 30px;
+    }
+
+    .subtitle {
+        margin-top: 0;
+        margin-bottom: 28px;
+        color: #7A8078;
+    }
+    .summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    .summary-card {
+        background-color: #FFFFFF;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #E5E7DF;
+    }
+    .add-expense{
+        padding: 20px;
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        margin: 16px;
+        display: flex;
+    }
+
+    .summary-label {
+        margin: 0 0 12px;
+        font-size: 14px;
+        color: #7A8078;
+    }
+
+    .summary-value {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        color: #526B57;
+    }
+
+    .summary-value span {
+        font-size: 14px;
+        font-weight: normal;
+    } 
+
+@media (max-width: 600px) {
+    .summary {
+        grid-template-columns: 1fr;
+    }
+    }
+</style>
 </head>
 <body>
+    <div class="container">
     <h1>Web Kakeibo</h1>
-    <p>ここから家計簿を作っていきます。</p>
-    <p>支出総額：{{ total }} 円</p>
-    {% if monthly_budget is defined %}
-    <p>月間予算：{{ monthly_budget }} 円</p>
-    <p>予算残額：{{ remaining }} 円</p>
-    {% endif %}
+    <p class="subtitle">ここから家計簿を作っていきます。</p>
+    <div class="summary">
+    <div class="summary-card">
+        <p class="summary-label">今月の支出</p>
+        <p class="summary-value">{{ total }} <span>円</span></p>
+    </div>
+
+    <div class="summary-card">
+        <p class="summary-label">月間予算</p>
+        <p class="summary-value">{{ monthly_budget }} <span>円</span></p>
+    </div>
+
+    <div class="summary-card">
+        <p class="summary-label">予算残額</p>
+        <p class="summary-value">{{ remaining }} <span>円</span></p>
+    </div>
+</div>
     <form action="/month" method="post">
         <input type="month" name="month">
         <button>月別表示</button>
@@ -22,7 +104,7 @@
         <button>予算を保存</button>
     </form>
 
-    <form action="/add" method="post">
+    <form action="/add" method="post" class="add-expense">
         <input name="item" placeholder="商品名">
         <input name="money" placeholder="金額">
         <input type="date" name="date">
@@ -40,5 +122,6 @@
          <a href="/delete/{{ record['id'] }}">削除</a>
     </p>
     {% endfor %}
+    </div>
 </body>
 </html>
